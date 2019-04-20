@@ -1,0 +1,29 @@
+class Solution {
+    public boolean validSquare(int[] p1, int[] p2, int[] p3, int[] p4) {
+        int[][] p = new int[4][2];
+        p[0] = p1;
+        p[1] = p2;
+        p[2] = p3;
+        p[3] = p4;
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 1; i < 4; i++) {
+          for (int j = i-1; j >= 0 ;j--) {
+            int dist = getDistanceSquare(p[i], p[j]);
+            map.put(dist, (map.containsKey(dist) ? map.get(dist) : 0) + 1);
+          }
+        }
+        if (map.size() != 2) {
+          return;
+        }
+        for (Integer key : map.keys()) {
+          if (map.get(key) != 2 && map.get(key) != 4) {
+            return false;
+          }
+        }
+        return true;
+    }
+
+    private int getDistanceSquare(int[] p1, int[] p2) {
+        return (p1[0] - p2[0]) * (p1[0] - p2[0]) + (p1[1] - p2[1]) * (p1[1] - p2[1]);
+    }
+}
