@@ -1,0 +1,57 @@
+/*
+605. Can Place Flowers
+Easy
+
+441
+
+250
+
+Favorite
+
+Share
+Suppose you have a long flowerbed in which some of the plots are planted and some are not. However, flowers cannot be planted in adjacent plots - they would compete for water and both would die.
+
+Given a flowerbed (represented as an array containing 0 and 1, where 0 means empty and 1 means not empty), and a number n, return if n new flowers can be planted in it without violating the no-adjacent-flowers rule.
+
+Example 1:
+Input: flowerbed = [1,0,0,0,1], n = 1
+Output: True
+Example 2:
+Input: flowerbed = [1,0,0,0,1], n = 2
+Output: False
+Note:
+The input array won't violate no-adjacent-flowers rule.
+The input array size is in the range of [1, 20000].
+n is a non-negative integer which won't exceed the input array size.
+*/
+// the idea is dp, 0 means try not to plant and 1 means try to plant
+// if current is 1, then cannot plant, so max so far is the same for both 0 and 1.
+// for 1 meaning that we try to plant and planted, but did not use new flowerbed.
+// if current is 0, means maybe able to plant, then need to check if i-1 is also 0,
+// if so, it's dp[0][i-1] + 1, assuming did not plant in i-1; otherwise, it is 0, we cannot plant.
+
+
+class Solution {
+    public boolean canPlaceFlowers(int[] flowerbed, int l) {
+        if (flowerbed.length == 0) {
+            return false;
+        }
+        if (flowerbed.length == 1) {
+            return (1 - flowerbed[0]) >= l;
+        }
+        int n = flowerbed.length;
+        int[][] dp = new int[2][n];
+        dp[0][0] = 0;
+        dp[1][0] = flowerbed[0] == 0  && flowerbed[1] == 0 ? 1 : 0;
+        for (int i = 1; i < n; i++) {
+            if (flowerbed[i] == 1) {
+                dp[0][i] = dp[0][i-1];
+                dp[1][i] = dp[0][i-1];
+            } else {
+                dp[0][i] = Math.max(dp[0][i-1], dp[1][i-1]);
+                dp[1][i] = flowerbed[i-1] == 0 ? dp[0][i-1] + 1 : 0;
+            }
+        }
+        return Math.max(dp[0][n-1], dp[1][n-1]) >= l;
+    }
+}
